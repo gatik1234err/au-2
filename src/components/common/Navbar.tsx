@@ -23,7 +23,7 @@ interface NavbarProps {
 }
 
 export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
-  const { currentUser, isAuthenticated, isAdmin, isActiveMember, isPendingMember, logout } = useAuth();
+  const { currentUser, isAuthenticated, isAdmin, isActiveMember, isPendingMember, logout, switchUserRole } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -404,111 +404,73 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
                 </div>
 
                 {showUserMenu && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      right: 0,
-                      top: '46px',
-                      width: '220px',
-                      background: 'var(--bg-surface-elevated)',
-                      border: '1px solid var(--border-strong)',
-                      borderRadius: 'var(--radius-lg)',
-                      boxShadow: 'var(--shadow-lg)',
-                      padding: '8px',
-                      zIndex: 600,
-                    }}
-                  >
-                    <div style={{ padding: '8px 10px', borderBottom: '1px solid var(--border-subtle)' }}>
-                      <div style={{ fontWeight: 600, fontSize: '13px' }}>{currentUser.name}</div>
-                      <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{currentUser.email}</div>
+                  <div className="user-menu-dropdown">
+                    <div style={{ padding: '2px 4px 12px 4px', borderBottom: '1px solid rgba(255, 255, 255, 0.1)', marginBottom: '12px' }}>
+                      <div style={{ fontWeight: 700, fontSize: '15px', color: '#FFFFFF', letterSpacing: '-0.01em' }}>
+                        {currentUser.name}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.5)', marginTop: '2px' }}>
+                        {currentUser.email}
+                      </div>
                     </div>
 
-                    <button
-                      onClick={() => handleNav('/dashboard')}
-                      className="btn-ghost"
-                      style={{
-                        width: '100%',
-                        justifyContent: 'flex-start',
-                        padding: '8px 10px',
-                        fontSize: '13px',
-                      }}
-                    >
-                      <LayoutDashboard size={15} /> Dashboard
-                    </button>
-
-                    <button
-                      onClick={() => handleNav('/dashboard/bids')}
-                      className="btn-ghost"
-                      style={{
-                        width: '100%',
-                        justifyContent: 'flex-start',
-                        padding: '8px 10px',
-                        fontSize: '13px',
-                      }}
-                    >
-                      <Gavel size={15} /> My Bids
-                    </button>
-
-                    <button
-                      onClick={() => handleNav('/dashboard/wins')}
-                      className="btn-ghost"
-                      style={{
-                        width: '100%',
-                        justifyContent: 'flex-start',
-                        padding: '8px 10px',
-                        fontSize: '13px',
-                      }}
-                    >
-                      <Trophy size={15} /> Won Auctions
-                    </button>
-
-                    <button
-                      onClick={() => handleNav('/dashboard/profile')}
-                      className="btn-ghost"
-                      style={{
-                        width: '100%',
-                        justifyContent: 'flex-start',
-                        padding: '8px 10px',
-                        fontSize: '13px',
-                      }}
-                    >
-                      <User size={15} /> Profile & Membership
-                    </button>
-
-                    {isAdmin && (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                       <button
-                        onClick={() => handleNav('/admin')}
-                        className="btn-ghost text-orange"
-                        style={{
-                          width: '100%',
-                          justifyContent: 'flex-start',
-                          padding: '8px 10px',
-                          fontSize: '13px',
-                        }}
+                        onClick={() => handleNav('/dashboard')}
+                        className="dropdown-boxed-btn"
                       >
-                        <Shield size={15} /> Admin Console
+                        <LayoutDashboard size={17} />
+                        <span>Dashboard</span>
                       </button>
-                    )}
 
-                    <div style={{ borderTop: '1px solid var(--border-subtle)', margin: '4px 0' }} />
+                      <button
+                        onClick={() => handleNav('/dashboard/bids')}
+                        className="dropdown-boxed-btn"
+                      >
+                        <Gavel size={17} />
+                        <span>My Bids</span>
+                      </button>
 
-                    <button
-                      onClick={() => {
-                        logout();
-                        setShowUserMenu(false);
-                        handleNav('/');
-                      }}
-                      className="btn-ghost"
-                      style={{
-                        width: '100%',
-                        justifyContent: 'flex-start',
-                        padding: '8px 10px',
-                        fontSize: '13px',
-                        color: 'var(--status-lost)',
-                      }}
-                    >
-                      <LogOut size={15} /> Sign Out
-                    </button>
+                      <button
+                        onClick={() => handleNav('/dashboard/wins')}
+                        className="dropdown-boxed-btn"
+                      >
+                        <Trophy size={17} />
+                        <span>Won Auctions</span>
+                      </button>
+
+                      <button
+                        onClick={() => handleNav('/dashboard/profile')}
+                        className="dropdown-boxed-btn"
+                      >
+                        <User size={17} />
+                        <span>Profile & Membership</span>
+                      </button>
+
+                      {isAdmin && (
+                        <button
+                          onClick={() => {
+                            handleNav('/admin');
+                          }}
+                          className="dropdown-boxed-btn dropdown-btn-admin"
+                        >
+                          <Shield size={17} />
+                          <span>Admin Portal</span>
+                        </button>
+                      )}
+
+                      <button
+                        onClick={() => {
+                          logout();
+                          setShowUserMenu(false);
+                          handleNav('/');
+                        }}
+                        className="dropdown-boxed-btn dropdown-btn-signout"
+                      >
+                        <LogOut size={17} />
+                        <span>Sign Out</span>
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>
@@ -602,6 +564,64 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPath, onNavigate }) => {
       )}
 
       <style>{`
+        .user-menu-dropdown {
+          position: absolute;
+          right: 0;
+          top: 50px;
+          width: 250px;
+          background-color: #161a20;
+          border: 1px solid rgba(255, 255, 255, 0.22);
+          border-radius: 12px;
+          box-shadow: 0 20px 40px rgba(0, 0, 0, 0.75);
+          padding: 14px;
+          z-index: 600;
+        }
+
+        .dropdown-boxed-btn {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+          padding: 11px 14px;
+          background-color: rgba(255, 255, 255, 0.02);
+          border: 1px solid rgba(255, 255, 255, 0.22);
+          border-radius: 6px;
+          color: #E5E7EB;
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.15s ease-in-out;
+        }
+
+        .dropdown-boxed-btn:hover {
+          background-color: rgba(255, 255, 255, 0.08);
+          border-color: rgba(255, 255, 255, 0.45);
+          color: #FFFFFF;
+        }
+
+        .dropdown-btn-admin {
+          color: #FF5A1F;
+          border-color: rgba(255, 90, 31, 0.35);
+        }
+
+        .dropdown-btn-admin:hover {
+          background-color: rgba(255, 90, 31, 0.12);
+          border-color: #FF5A1F;
+          color: #FF5A1F;
+        }
+
+        .dropdown-btn-signout {
+          color: #EF4444 !important;
+          border-color: rgba(239, 68, 68, 0.3) !important;
+        }
+
+        .dropdown-btn-signout:hover {
+          background-color: rgba(239, 68, 68, 0.12) !important;
+          border-color: rgba(239, 68, 68, 0.6) !important;
+          color: #EF4444 !important;
+        }
+
         @media (min-width: 860px) {
           .desktop-nav {
             display: flex !important;

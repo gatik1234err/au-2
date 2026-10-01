@@ -3,7 +3,6 @@ import { ToastProvider, useToast } from './context/ToastContext';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { AuctionProvider, useAuctions } from './context/AuctionContext';
 
-import { RoleSwitcherBar } from './components/common/RoleSwitcherBar';
 import { LowConnectionBanner } from './components/common/LowConnectionBanner';
 import { ToastContainer } from './components/common/ToastContainer';
 import { Navbar } from './components/common/Navbar';
@@ -54,6 +53,7 @@ const MainApp: React.FC = () => {
 
   const { refreshAuctions } = useAuctions();
   const { showToast } = useToast();
+  const { isAdmin } = useAuth();
 
   const handleNavigate = (path: string) => {
     setCurrentPath(path);
@@ -87,12 +87,11 @@ const MainApp: React.FC = () => {
     refreshAuctions();
   };
 
-  const isAdminRoute = currentPath.startsWith('/admin');
+  const isAdminRoute = currentPath.startsWith('/admin') && isAdmin;
 
   return (
     <div className="app-container">
-      {/* Top Persona & Network Switcher Bar */}
-      <RoleSwitcherBar />
+
 
       {/* Low-bandwidth alert banner */}
       <LowConnectionBanner />
