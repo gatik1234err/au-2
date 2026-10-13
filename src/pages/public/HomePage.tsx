@@ -92,9 +92,9 @@ export const HomePage: React.FC<HomePageProps> = ({ onNavigate, onSelectAuction 
                 marginBottom: '16px',
               }}
             >
-              THE NEXT RIDE <br />
+              A GEM UNEARTHED
+               <br />
               <span style={{ color: 'var(--accent-orange)', textShadow: '0 0 30px rgba(255,90,31,0.4)' }}>
-                COULD BE YOURS.
               </span>
             </h1>
 
